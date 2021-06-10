@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hu_health_care_mania/utils/database_helper.dart';
 import 'package:hu_health_care_mania/models/item.dart';
-import 'package:hu_health_care_mania/screens/menu_detail.dart';
+import 'package:hu_health_care_mania/screens/input_detail.dart';
 import 'package:sqflite/sqflite.dart';
 
 class MenuList extends StatefulWidget {
@@ -38,7 +38,7 @@ class MenuListState extends State<MenuList>{
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           debugPrint('FAB clicked');
-          navigateToDetail(item(2,''), '新規登録');
+          navigateToDetail(Item(2,''), '新規登録');
         },
 
         tooltip: '新規登録',
@@ -60,18 +60,18 @@ class MenuListState extends State<MenuList>{
           elevation: 2.0,
           child: ListTile(
             leading: CircleAvatar(
-            backgroudColor: getPriorityColor(this.menuList[position].priority),
-              child: getPriorityIcon(this.menuList[positon].priorty),
+            backgroundColor: getPriorityColor(this.menuList[position].priority),
+              child: getPriorityIcon(this.menuList[position].priority),
             ),
 
             title: Text('受診日 : '+ this.menuList[position].on_the_day),
 
-            subtitle: Text('更新日'+ this.menuList[Position].date),
+            subtitle: Text('更新日'+ this.menuList[position].date),
 
 
               onTap:(){
               debugPrint("ListTitle Tapped");
-              navigationToDetail(this.menuList[position],'参照・訂正');
+              navigateToDetail(this.menuList[position],'参照・訂正');
             },
           ),
         );
@@ -126,9 +126,9 @@ class MenuListState extends State<MenuList>{
   }
 
   void navigateToDetail(Item item, String height) async {
-    bool result = await Navigator.push(context, MaterialPageRoute(bulder: (conteext{
-      return MenuDetail(Item, height)
-    })));
+    bool result = await Navigator.push(context, MaterialPageRoute(builder: (context){
+      return InputDetail(item, height);
+    }));
 
     if (result == true){
       updateListView();
@@ -141,10 +141,10 @@ void updateListView(){
     dbFuture.then((database){
 
       Future<List<Item>> itemListFuture = databaseHelper.getItemList();
-      itemListFuture.then((itemList)){
+      itemListFuture.then((itemList){
         setState(() {
           this.itemList = itemList;
-          this.count = ItemList.length;
+          this.count = itemList.length;
         });
       });
     });
