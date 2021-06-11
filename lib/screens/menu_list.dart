@@ -16,14 +16,14 @@ class MenuList extends StatefulWidget {
 class MenuListState extends State<MenuList>{
 
   DatabaseHelper databaseHelper = DatabaseHelper();
-  List<Item> menuList;
+  List<Item> itemList;
   int count =0;
 
   @override
   Widget build(BuildContext context){
 
-    if (menuList == null){
-      menuList =<Item>[];
+    if (itemList == null){
+      itemList =<Item>[];
       updateListView();
     }
 
@@ -60,18 +60,18 @@ class MenuListState extends State<MenuList>{
           elevation: 2.0,
           child: ListTile(
             leading: CircleAvatar(
-            backgroundColor: getPriorityColor(this.menuList[position].priority),
-              child: getPriorityIcon(this.menuList[position].priority),
+            backgroundColor: getPriorityColor(this.itemList[position].priority),
+              child: getPriorityIcon(this.itemList[position].priority),
             ),
 
-            title: Text('受診日 : '+ this.menuList[position].on_the_day),
+            title: Text('受診日 : '+ this.itemList[position].on_the_day),
 
-            subtitle: Text('更新日'+ this.menuList[position].date),
+            subtitle: Text('更新日'+ this.itemList[position].date),
 
 
               onTap:(){
               debugPrint("ListTitle Tapped");
-              navigateToDetail(this.menuList[position],'参照・訂正');
+              navigateToDetail(this.itemList[position],'参照・訂正');
             },
           ),
         );

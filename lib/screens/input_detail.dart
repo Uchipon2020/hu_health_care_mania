@@ -19,7 +19,7 @@ class InputDetail extends StatefulWidget {
 
 class InputDetailState extends State<InputDetail> {
 
-  static var _priorites = ['定期健康診断', '人間ドック'];
+  static var _priorities = ['定期健康診断', '人間ドック'];
 
   DatabaseHelper helper = DatabaseHelper();
 
@@ -27,8 +27,9 @@ class InputDetailState extends State<InputDetail> {
   Item item;
 
   TextEditingController onTheDayController = TextEditingController();
-
   String _labelText;
+
+  InputDetailState(this.item, this.appBarTitle);
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +41,7 @@ class InputDetailState extends State<InputDetail> {
     return WillPopScope(
     onWillPop: () {
 
+      // ignore: missing_return
       moveToLastScreen();
     },
 
@@ -57,18 +59,13 @@ class InputDetailState extends State<InputDetail> {
 
         body: Padding(
             padding: EdgeInsets.only(top: 145.0, left: 10.0, right: 10.0),
+          child: ListView(
+            children: <Widget>[
 
-            child: ListView(
-
-              children: <Widget>[
-
-
-                ListTile(title: DropdownButton(
-
+              ListTile(
+                title: DropdownButton(
                   items: _priorities.map((String dropDownStringItem){
-
                     return DropdownMenuItem<String>(
-
                       value: dropDownStringItem,
                       child: Text(dropDownStringItem),
                     );
@@ -84,10 +81,8 @@ class InputDetailState extends State<InputDetail> {
                       updatePriorityAsInt(valueSelectedByUser);
                     });
                   }
-
-
-                ),
-                ),
+                  ),
+              ),
 
                 Padding(
                   padding: EdgeInsets.only(top: 15.0, bottom: 10.0),
@@ -110,6 +105,54 @@ class InputDetailState extends State<InputDetail> {
                     ),
                   ),
                 ),
+
+              Padding(
+                padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+
+                      child: RaisedButton(
+                        color: Theme.of(context).primaryColorDark,
+                        textColor: Theme.of(context).primaryColorLight,
+
+                        child: Text(
+                          'Save',
+                          textScaleFactor: 1.5,
+                        ),
+                        onPressed: () {
+                          setState((){
+                            debugPrint("save button clicked");
+                            _save();
+                          });
+                        },
+                      ),
+                    ),
+
+                    Container(width: 5.0),
+
+                    Expanded(
+                      child: RaisedButton(
+                        color: Theme.of(context).primaryColorDark,
+                        textColor: Theme.of(context).primaryColorLight,
+                        child: Text(
+                          'Delete',
+                          textScaleFactor: 1.5,
+                        ),
+                        onPressed: (){
+                          setState((){
+                            debugPrint("Delete button clicked");
+                            _delete();
+                          });
+                        }
+
+                      )
+                    )
+
+                  ]
+                )
+              )
+
               ],
             ),
         ),
@@ -120,6 +163,34 @@ class InputDetailState extends State<InputDetail> {
     Navigator.pop(context, true);
   }
 
+
+  void updatePriorityAsInt(String value){
+    switch (value){
+      case '定期健康診断':
+        item.priority = 1;
+        break;
+      case '人間ドック':
+        item.priority = 2;
+        break;
+
+    }
+  }
+
+  String getPriorityAsString(int value){
+    String priority;
+    switch(value){
+      case 1:
+        priority = _priorities[0];
+        break;
+      case 2:
+        priority = _priorities[1];
+        break;
+    }
+    return priority;
+  }
+
+
+
   void updateOTD(){
     item.on_the_day = onTheDayController.text;
   }
@@ -129,7 +200,7 @@ void _save() async {
 
     item.date = DateFormat.yMMMd().format(DateTime.now());
     int result;
-    if (item.id !=0 null){
+    if (item.id != null){
       result = await helper.updateItem(item);
           }else{
       result = await helper.insertItem(item);
@@ -142,6 +213,22 @@ void _save() async {
     }
   }
 
+  void _delete() async {
+    moveToLastScreen();
+
+    if (item.id == null) {
+      _showAlertDialog('status', 'nothing!!');
+
+    return;
+  }
+    int result = await helper.deleteItem(item.id);
+    if (result != 0){
+      _showAlertDialog('status', 'delete!!');
+    } else{
+      _showAlertDialog('stats', 'err');
+    }
+  }
+
   void _showAlertDialog(String title, String message){
     AlertDialog alertDialog = AlertDialog(
       title:Text(title),
@@ -149,12 +236,12 @@ void _save() async {
     );
     showDialog(
       context: context,
-      builder: (_) => alertDialog;
+      builder: (_) => alertDialog
     );
-    }
   }
-
-
 }
+
+
+
 
 

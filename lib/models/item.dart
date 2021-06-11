@@ -7,7 +7,7 @@ class Item{
   String _date;
   int _priority;
 
-  Item(this._priority,[this._id, this._on_the_day, this._date]);
+  Item(this._priority,[this._on_the_day, this._date]);
   Item.withId(this._id, this._priority,[this._on_the_day, this._date]);
 
   int get id => _id;
@@ -40,7 +40,7 @@ class Item{
     }
     map['on_the_day'] = _on_the_day;
     map['priority'] = _priority;
-    map['data'] = _date;
+    map['date'] = _date;
     return map;
 
   }
