@@ -1,6 +1,5 @@
 
 import 'package:hu_health_care_mania/models/item.dart';
-import 'package:path_provider/provider/path_provider.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:sqflite/sqflite.dart';
@@ -100,9 +99,9 @@ class DatabaseHelper{
     var itemMapList = await getItemMapList();//データベースから、MapItemを獲得
     int count = itemMapList.length;//テーブルのマップの数を数える
 
-    Linst<Item> itemList = <Item>[];
+    List<Item> itemList = <Item>[];
 
-    for (int = 0; i < count; i++){
+    for (int i = 0; i < count; i++){
       itemList.add(Item.fromMapObject(itemMapList[1]));
     }
     return itemList;
