@@ -1,11 +1,12 @@
 
 class Item{
 
-  int _id;
+  int _id; //id
   // ignore: non_constant_identifier_names
-  String _on_the_day;
-  String _date;
-  int _priority;
+  String _on_the_day;  //受診日
+  String _date;//更新日
+  int _priority;//分類
+
 
   Item(this._priority,[this._id, this._on_the_day, this._date]);
   Item.withId(this._id, this._priority,[this._on_the_day, this._date]);

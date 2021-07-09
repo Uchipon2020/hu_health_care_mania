@@ -38,7 +38,7 @@ class MenuListState extends State<MenuList>{
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           debugPrint('FAB clicked');
-          navigateToDetail(Item(2,''), '新規登録');
+          navigateToDetail(Item(1,), '新規登録');
         },
 
         tooltip: '新規登録',
@@ -57,7 +57,7 @@ class MenuListState extends State<MenuList>{
       itemBuilder: (BuildContext context, int position){
         return Card(
           color: Colors.white,
-          elevation: 2.0,
+          elevation: 5.0,
           child: ListTile(
             leading: CircleAvatar(
             backgroundColor: getPriorityColor(this.menuList[position].priority),
@@ -143,7 +143,7 @@ void updateListView(){
       Future<List<Item>> itemListFuture = databaseHelper.getItemList();
       itemListFuture.then((itemList){
         setState(() {
-          this.itemList = itemList;
+          this.menuList = itemList;
           this.count = itemList.length;
         });
       });

@@ -1,5 +1,6 @@
 
 import 'package:hu_health_care_mania/models/item.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:sqflite/sqflite.dart';
@@ -10,16 +11,16 @@ class DatabaseHelper{
   static Database _database;
 
   String itemTable = 'item_table'; //テーブル名
-  String colId = 'id'; //id
-  String colPriority = 'priority'; //優先順位
+  String COLId = 'id'; //id
+  String COLPriority = 'priority'; //優先順位
   // ignore: non_constant_identifier_names
-  String colOn_the_day = 'on_the_day'; //受診日
-  String colDate = 'date'; //更新日
+  String COLOn_the_day = 'on_the_day'; //受診日
+  String COLDate = 'date'; //更新日
 
   DatabaseHelper._createInstance();
 
   //特殊なコンストラクタ（初期設定）を指定する。インスタンスする際に、
-  // 中身がNull出会った場合はデータベースを作成するという、
+  // 中身がNullだった場合はデータベースを作成するという、
   // 単に数値セットだけでなく、条件分岐などのプログラムを走らせたいときに使う
   factory DatabaseHelper(){
 
@@ -47,16 +48,16 @@ class DatabaseHelper{
 
   void _createDb(Database db, int newVersion) async{
     
-    await db.execute('CREATE TABLE $itemTable($colId INTEGER PRIMARY KEY AUTOINCREMENT,'
-        '　$colOn_the_day TEXT,'
-        ' $colPriority INTEGER'
-        ' $colDate TEXT)');
+    await db.execute('CREATE TABLE $itemTable($COLId INTEGER PRIMARY KEY AUTOINCREMENT,'
+        '　$COLOn_the_day TEXT,'
+        ' $COLPriority INTEGER'
+        ' $COLDate TEXT)');
   }
 //データベースからすべてのオブジェクトを取得する
   Future<List<Map<String, dynamic>>> getItemMapList() async{
     Database db = await this.database;
 
-    var result = await db.query(itemTable, orderBy: '$colPriority ASC');
+    var result = await db.query(itemTable, orderBy: '$COLPriority ASC');
     return result;
   }
 
@@ -72,7 +73,7 @@ class DatabaseHelper{
   //データベースを更新する
   Future<int> updateItem(Item item) async{
     Database db = await this.database;
-    var result = await db.update(itemTable, item.toMap(), where: '$colId = ?', whereArgs: [item.id]);
+    var result = await db.update(itemTable, item.toMap(), where: '$COLId = ?', whereArgs: [item.id]);
     return result;
   }
 
@@ -80,7 +81,7 @@ class DatabaseHelper{
   //データベースを削除する
   Future<int> deleteItem(int id) async {
     var db = await this.database;
-    int result = await db.rawDelete('DELETE FROM $itemTable WHERE $colId = $id');
+    int result = await db.rawDelete('DELETE FROM $itemTable WHERE $COLId = $id');
     return result;
   }
 
@@ -93,7 +94,7 @@ class DatabaseHelper{
  }
 
 
- //マップリスト　と　アイテムリストをコンバートする？
+ //アイテムリストの中に、データベースマップからのデータを取り込む
   Future<List<Item>> getItemList() async {
 
     var itemMapList = await getItemMapList();//データベースから、MapItemを獲得
