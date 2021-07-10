@@ -10,12 +10,13 @@ class DatabaseHelper{
   static DatabaseHelper _databaseHelper;
   static Database _database;
 
-  String itemTable = 'item_table'; //テーブル名
-  String COLId = 'id'; //id
-  String COLPriority = 'priority'; //優先順位
+  String itemTable = 'item_table';      //テーブル名
+  String COLId = 'id';                  //id
+  String COLPriority = 'priority';      //優先順位
   // ignore: non_constant_identifier_names
-  String COLOn_the_day = 'on_the_day'; //受診日
-  String COLDate = 'date'; //更新日
+  String COLOn_the_day = 'on_the_day';  //受診日
+  String COLDate = 'date';              //更新日
+  String COLHeight = 'height';          //身長
 
   DatabaseHelper._createInstance();
 
@@ -25,16 +26,13 @@ class DatabaseHelper{
   factory DatabaseHelper(){
 
     if (_databaseHelper == null){
-      _databaseHelper = DatabaseHelper._createInstance();
-    }
+      _databaseHelper = DatabaseHelper._createInstance();}
     return _databaseHelper;
   }
 
   Future<Database> get database async {
-
     if(_database == null){
-      _database = await initializeDatabase();
-    }
+      _database = await initializeDatabase();}
     return _database;
   }
 
@@ -51,7 +49,8 @@ class DatabaseHelper{
     await db.execute('CREATE TABLE $itemTable($COLId INTEGER PRIMARY KEY AUTOINCREMENT,'
         '　$COLOn_the_day TEXT,'
         ' $COLPriority INTEGER'
-        ' $COLDate TEXT)');
+        ' $COLDate TEXT'
+        ' $COLHeight TEXT)');
   }
 //データベースからすべてのオブジェクトを取得する
   Future<List<Map<String, dynamic>>> getItemMapList() async{
@@ -61,7 +60,6 @@ class DatabaseHelper{
     return result;
   }
 
-
   //オブジェクトのなかから、指定されたものを取り込む
   Future<int> insertItem(Item item) async{
     Database db = await this.database;
@@ -69,14 +67,12 @@ class DatabaseHelper{
     return result;
   }
 
-
   //データベースを更新する
   Future<int> updateItem(Item item) async{
     Database db = await this.database;
     var result = await db.update(itemTable, item.toMap(), where: '$COLId = ?', whereArgs: [item.id]);
     return result;
   }
-
 
   //データベースを削除する
   Future<int> deleteItem(int id) async {
@@ -99,12 +95,9 @@ class DatabaseHelper{
 
     var itemMapList = await getItemMapList();//データベースから、MapItemを獲得
     int count = itemMapList.length;//テーブルのマップの数を数える
-
     List<Item> itemList = <Item>[];
-
     for (int i = 0; i < count; i++){
-      itemList.add(Item.fromMapObject(itemMapList[1]));
-    }
+      itemList.add(Item.fromMapObject(itemMapList[1]));}
     return itemList;
 }
 }
