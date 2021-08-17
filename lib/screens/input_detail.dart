@@ -1,12 +1,10 @@
 import 'package:flutter/cupertino.dart';
-import 'package:hu_health_care_mania/models/item.dart';
 import 'package:flutter/material.dart';
 import 'package:hu_health_care_mania/models/item.dart';
 import 'package:hu_health_care_mania/utils/database_helper.dart';
 import 'package:intl/intl.dart';
 
 class InputDetail extends StatefulWidget {
-
   final String appBarTitle;
   final Item item;
   String formatted;
@@ -20,7 +18,6 @@ class InputDetail extends StatefulWidget {
 }
 
 class InputDetailState extends State<InputDetail> {
-
   static var _priorites = ['定期健康診断', '人間ドック', '雇入時健診', 'その他'];
 
   DatabaseHelper helper = DatabaseHelper();
@@ -35,14 +32,10 @@ class InputDetailState extends State<InputDetail> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = Theme
-        .of(context)
-        .textTheme
-        .subtitle1;
+    TextStyle textStyle = Theme.of(context).textTheme.subtitle1;
 //コントローラーのセット
     onTheDayController.text = item.on_the_day;
     heightController.text = item.height;
-
 
     //メインエリアーーーーーーーーーーーーーーーーー
     return WillPopScope(
@@ -51,8 +44,8 @@ class InputDetailState extends State<InputDetail> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(appBarTitle),
-          leading: IconButton(icon: Icon(
-              Icons.arrow_back),
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
               onPressed: () {
                 moveToLastScreen();
               }),
@@ -65,56 +58,55 @@ class InputDetailState extends State<InputDetail> {
           padding: EdgeInsets.only(top: 145.0, left: 10.0, right: 10.0),
           child: ListView(
             children: <Widget>[
-
-              ListTile(title: DropdownButton(
-                  items: _priorites.map((String dropDownStringItem) {
-                    return DropdownMenuItem<String>(
-                      value: dropDownStringItem,
-                      child: Text(dropDownStringItem),);
-                  }).toList(),
-                  style: textStyle,
-                  value: getPriorityAsString(item.priority),
-                  onChanged: (valueSelectedByUser) {
-                    setState(() {
-                      debugPrint('User selected $valueSelectedByUser');
-                      updatePriorityAsInt(valueSelectedByUser);
-                    });
-                  }),),
+              ListTile(
+                title: DropdownButton(
+                    items: _priorites.map((String dropDownStringItem) {
+                      return DropdownMenuItem<String>(
+                        value: dropDownStringItem,
+                        child: Text(dropDownStringItem),
+                      );
+                    }).toList(),
+                    style: textStyle,
+                    value: getPriorityAsString(item.priority),
+                    onChanged: (valueSelectedByUser) {
+                      setState(() {
+                        debugPrint('User selected $valueSelectedByUser');
+                        updatePriorityAsInt(valueSelectedByUser);
+                      });
+                    }),
+              ),
 
               /*
                 * calendar input-------------------------
                 * */
               Padding(
                 padding: EdgeInsets.only(top: 15.0, bottom: 10.0),
-
-                child: Row(
-                    children: <Widget>[
-                      IconButton(
-                        onPressed: () {
-                          _selectDate(context)
-                          ;
-                        },
-                        icon: Icon(Icons.calendar_today_outlined),
+                child: Row(children: <Widget>[
+                  IconButton(
+                    onPressed: () {
+                      _selectDate(context);
+                    },
+                    icon: Icon(Icons.calendar_today_outlined),
+                  ),
+                  Expanded(
+                    child: TextField(
+                      //受診日入力　カレンダー表示入力不可
+                      controller: onTheDayController,
+                      enabled: false,
+                      onChanged: (value) {
+                        debugPrint(
+                            'Something changed in description text field');
+                        updateOTD();
+                      },
+                      decoration: InputDecoration(
+                        labelText: '受診日',
+                        labelStyle: textStyle,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5.0)),
                       ),
-                      Expanded(
-                        child: TextField( //受診日入力　カレンダー表示入力不可
-                          controller: onTheDayController,
-                          enabled: false,
-                          onChanged: (value) {
-                            debugPrint(
-                                'Something changed in description text field');
-                            updateOTD();
-                          },
-                          decoration: InputDecoration(
-                            labelText: '受診日',
-                            labelStyle: textStyle,
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0)
-                            ),
-                          ),
-                        ),
-                      ),
-                    ]),
+                    ),
+                  ),
+                ]),
               ),
 
               /*
@@ -122,40 +114,35 @@ class InputDetailState extends State<InputDetail> {
                 * */
               Padding(
                 padding: EdgeInsets.only(top: 15.0, bottom: 10.0),
-
-                child: Row(
-                    children: <Widget>[
-                      IconButton(
-                        onPressed: () {
-                          FocusScope.of(context).requestFocus(
-                              new FocusNode());
-                          selectheight();
-                        },
-                        icon: Icon(Icons.accessibility),
+                child: Row(children: <Widget>[
+                  IconButton(
+                    onPressed: () {
+                      FocusScope.of(context).requestFocus(new FocusNode());
+                      selectheight();
+                    },
+                    icon: Icon(Icons.accessibility),
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: heightController,
+                      textAlign: TextAlign.right,
+                      //enabled: false,
+                      onChanged: (value) {
+                        debugPrint(
+                            'Something changed in description text field');
+                        updateHeight();
+                      },
+                      decoration: InputDecoration(
+                        labelText: '身長',
+                        labelStyle: textStyle,
+                        suffix: Text(' cm'),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5.0)),
                       ),
-                      Expanded(
-                        child: TextField(
-                          controller: heightController,
-                          textAlign: TextAlign.right,
-                          //enabled: false,
-                          onChanged: (value) {
-                            debugPrint(
-                                'Something changed in description text field');
-                            updateHeight();
-                          },
-                          decoration: InputDecoration(
-                            labelText: '身長',
-                            labelStyle: textStyle,
-                            suffix: Text(' cm'),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0)
-                            ),
-                          ),
-                        ),
-                      ),
-                    ]),
+                    ),
+                  ),
+                ]),
               ),
-
 
               /*
                 * Save & Delete---------------------------
@@ -166,13 +153,12 @@ class InputDetailState extends State<InputDetail> {
                     children: <Widget>[
                       Expanded(
                         child: RaisedButton(
-                          color: Theme
-                              .of(context)
-                              .primaryColorDark,
-                          textColor: Theme
-                              .of(context)
-                              .primaryColorLight,
-                          child: Text('Save', textScaleFactor: 1.5,),
+                          color: Theme.of(context).primaryColorDark,
+                          textColor: Theme.of(context).primaryColorLight,
+                          child: Text(
+                            'Save',
+                            textScaleFactor: 1.5,
+                          ),
                           onPressed: () {
                             setState(() {
                               _save();
@@ -180,17 +166,17 @@ class InputDetailState extends State<InputDetail> {
                           },
                         ),
                       ),
-
-                      Container(width: 5.0,),
-
-                      Expanded(child: RaisedButton(
-                        color: Theme
-                            .of(context)
-                            .primaryColorDark,
-                        textColor: Theme
-                            .of(context)
-                            .primaryColorLight,
-                        child: Text('Delete', textScaleFactor: 1.5,),
+                      Container(
+                        width: 5.0,
+                      ),
+                      Expanded(
+                          child: RaisedButton(
+                        color: Theme.of(context).primaryColorDark,
+                        textColor: Theme.of(context).primaryColorLight,
+                        child: Text(
+                          'Delete',
+                          textScaleFactor: 1.5,
+                        ),
                         onPressed: () {
                           setState(() {
                             _delete();
@@ -198,8 +184,7 @@ class InputDetailState extends State<InputDetail> {
                         },
                       ))
                     ],
-                  )
-              )
+                  ))
             ],
           ),
         ),
@@ -211,48 +196,50 @@ class InputDetailState extends State<InputDetail> {
   * メソッドエリア
   * */
   //drum roll
-  void selectheight(){
+  void selectheight() {
     final height_list = item.heightlist;
     final _pickerItems = height_list.map<Widget>((item) => Text(item)).toList();
     var selectedIndex = 5;
 
-    showCupertinoModalPopup<void>(context: context,
-      builder: (BuildContext context){
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) {
         return Container(
           height: 216,
           child: GestureDetector(
-            onTap: (){
+            onTap: () {
               Navigator.pop(context);
             },
-            child:CupertinoPicker(
+            child: CupertinoPicker(
               itemExtent: 32,
               scrollController: FixedExtentScrollController(
-                initialItem: 0,),
+                initialItem: 0,
+              ),
               backgroundColor: Colors.white,
               children: _pickerItems,
-              onSelectedItemChanged: (int index){
+              onSelectedItemChanged: (int index) {
                 selectedIndex = index;
               },
             ),
           ),
         );
       },
-    ).then((_){
-      if(selectedIndex != null){
-        heightController.value = TextEditingValue(text: height_list[selectedIndex]);
+    ).then((_) {
+      if (selectedIndex != null) {
+        heightController.value =
+            TextEditingValue(text: height_list[selectedIndex]);
       }
     });
   }
 
-
   // MOVE
-  void moveToLastScreen(){
+  void moveToLastScreen() {
     Navigator.pop(context, true);
   }
 
   //CONVERT
-  void updatePriorityAsInt(String value){
-    switch (value){
+  void updatePriorityAsInt(String value) {
+    switch (value) {
       case '健康診断':
         item.priority = 1;
         break;
@@ -267,9 +254,10 @@ class InputDetailState extends State<InputDetail> {
         break;
     }
   }
-  String getPriorityAsString(int value){
+
+  String getPriorityAsString(int value) {
     String priority;
-    switch(value){
+    switch (value) {
       case 1:
         priority = _priorites[0];
         break;
@@ -277,84 +265,79 @@ class InputDetailState extends State<InputDetail> {
         priority = _priorites[1];
         break;
       case 3:
-        priority = _priorites[3];
+        priority = _priorites[2];
         break;
       case 4:
-        priority = _priorites[4];
+        priority = _priorites[3];
         break;
     }
     return priority;
   }
 
   //UPDATE
-  void updateOTD(){
+  void updateOTD() {
     item.on_the_day = onTheDayController.text;
   }
-  void updateHeight(){
+
+  void updateHeight() {
     item.height = heightController.text;
   }
 
   //SAVE
-void _save() async {
+  void _save() async {
     moveToLastScreen();
     item.date = DateFormat.yMMMd().format(DateTime.now());
     int result;
-    if (item.id != null){
+    if (item.id != null) {
       result = await helper.updateItem(item);
-          }else{
+    } else {
       result = await helper.insertItem(item);
     }
-    if(result !=0){
-      _showAlertDialog('status','save success!');
-    }else {
-      _showAlertDialog('status','Sorry error!!');
+    if (result != 0) {
+      _showAlertDialog('status', 'save success!');
+    } else {
+      _showAlertDialog('status', 'Sorry error!!');
     }
   }
 
   //DELETE
-  void _delete() async{
-   moveToLastScreen();
-   if (item.id == null){
-     _showAlertDialog('status', 'Delete success!');
-   return;}
-   int result = await helper.deleteItem(item.id);
-   if(result != 0){
-     _showAlertDialog('Status', 'success');
-   } else{
-     _showAlertDialog('status', 'error');
-   }
+  void _delete() async {
+    moveToLastScreen();
+    if (item.id == null) {
+      _showAlertDialog('status', 'Delete success!');
+      return;
+    }
+    int result = await helper.deleteItem(item.id);
+    if (result != 0) {
+      _showAlertDialog('Status', 'success');
+    } else {
+      _showAlertDialog('status', 'error');
+    }
   }
 
   //Show Dialog
-  void _showAlertDialog(String title, String message){
+  void _showAlertDialog(String title, String message) {
     AlertDialog alertDialog = AlertDialog(
-      title:Text(title),
+      title: Text(title),
       content: Text(message),
     );
     showDialog(
       context: context,
       builder: (_) => alertDialog,
     );
-    }
+  }
 
-    //calender表示用メソッド
-Future<void> _selectDate(BuildContext context) async{
+  //calender表示用メソッド
+  Future<void> _selectDate(BuildContext context) async {
     final DateTime selected = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: new DateTime.now().add(new Duration(days:720))
-    );
-    if(selected != null){
-      item.on_the_day =DateFormat.yMMMd().format(selected);
-    setState(() => onTheDayController.text = item.on_the_day);
-    debugPrint(
-      '$onTheDayController.text');
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: new DateTime.now().add(new Duration(days: 720)));
+    if (selected != null) {
+      item.on_the_day = DateFormat.yMMMd().format(selected);
+      setState(() => onTheDayController.text = item.on_the_day);
+      debugPrint('$onTheDayController.text');
     }
   }
 }
-
-
-
-
-
