@@ -1,147 +1,144 @@
 import 'package:flutter/material.dart';
-import 'package:hu_health_care_mania/utils/database_helper.dart';
 import 'package:hu_health_care_mania/models/item.dart';
 import 'package:hu_health_care_mania/screens/input_detail.dart';
+import 'package:hu_health_care_mania/utils/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 class MenuList extends StatefulWidget {
-
   @override
-  State<StatefulWidget> createState(){
-
+  State<StatefulWidget> createState() {
     return MenuListState();
   }
 }
 
-class MenuListState extends State<MenuList>{
-
+class MenuListState extends State<MenuList> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Item> menuList;
-  int count =0;
+  int count = 0;
 
   @override
-  Widget build(BuildContext context){
-
-    if (menuList == null){
-      menuList =<Item>[];
+  Widget build(BuildContext context) {
+    if (menuList == null) {
+      menuList = <Item>[];
       updateListView();
     }
 
     return Scaffold(
-
       appBar: AppBar(
         title: Text('HEALTHCARE MANIA'),
       ),
-
       body: getMenuListView(),
-
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
+        onPressed: () {
           debugPrint('FAB clicked');
-          navigateToDetail(Item(1,), '新規登録');
+          navigateToDetail(
+              Item(
+                1,
+              ),
+              '新規登録');
         },
-
         tooltip: '新規登録',
-
-        child:Icon(Icons.add),
+        child: Icon(Icons.add),
       ),
     );
   }
 
-  ListView getMenuListView(){
-
+  ListView getMenuListView() {
     TextStyle titleStyle = Theme.of(context).textTheme.subtitle1;
 
     return ListView.builder(
       itemCount: count,
-      itemBuilder: (BuildContext context, int position){
+      itemBuilder: (BuildContext context, int position) {
         return Card(
           color: Colors.white,
           elevation: 5.0,
           child: ListTile(
             leading: CircleAvatar(
-            backgroundColor: getPriorityColor(this.menuList[position].priority),
+              backgroundColor:
+              getPriorityColor(this.menuList[position].priority),
               child: getPriorityIcon(this.menuList[position].priority),
             ),
-
-            title: Text('受診日 : '+ this.menuList[position].on_the_day),
-
-            subtitle: Text('更新日'+ this.menuList[position].date),
-
-
-              onTap:(){
+            title: Text('受診日 : ' + this.menuList[position].on_the_day),
+            subtitle: Text('更新日' + this.menuList[position].date),
+            onTap: () {
               debugPrint("ListTitle Tapped");
-              navigateToDetail(this.menuList[position],'参照・訂正');
+              navigateToDetail(this.menuList[position], '参照・訂正');
             },
           ),
         );
-        },
+      },
     );
   }
 
-
-  Color getPriorityColor(int priority){
+  Color getPriorityColor(int priority) {
     switch (priority) {
       case 1:
-        //type = "定期健康診断";
+      //type = "定期健康診断";
         return Colors.red;
         break;
       case 2:
-        //type = "人間ドック";
+      //type = "人間ドック";
         return Colors.yellow;
         break;
+      case 3:
+        return Colors.green;
+        break;
+      case 4:
+        return Colors.blue;
+        break;
+
       default:
         return Colors.yellow;
-
     }
   }
 
-  Icon getPriorityIcon(int priority){
-    switch(priority) {
+  Icon getPriorityIcon(int priority) {
+    switch (priority) {
       case 1:
         return Icon(Icons.play_arrow);
         break;
       case 2:
         return Icon(Icons.keyboard_arrow_right);
         break;
+      case 3:
+        return Icon(Icons.keyboard_arrow_right);
+      case 4:
+        return Icon(Icons.keyboard_arrow_right);
 
       default:
         return Icon(Icons.keyboard_arrow_right);
     }
   }
 
-  void _delete(BuildContext context, Item item) async{
-
+  void _delete(BuildContext context, Item item) async {
     int result = await databaseHelper.deleteItem(item.id);
-    if (result != 0){
+    if (result != 0) {
       _showSnackBar(context, '削除完了');
       updateListView();
     }
   }
 
-  void _showSnackBar(BuildContext context, String message){
-
+  void _showSnackBar(BuildContext context, String message) {
     final snackBar = SnackBar(content: Text(message));
     Scaffold.of(context).showSnackBar(snackBar);
   }
 
   void navigateToDetail(Item item, String height) async {
-    bool result = await Navigator.push(context, MaterialPageRoute(builder: (context){
+    bool result =
+    await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return InputDetail(item, height);
     }));
 
-    if (result == true){
+    if (result == true) {
       updateListView();
     }
   }
 
-void updateListView(){
-
+  void updateListView() {
     final Future<Database> dbFuture = databaseHelper.initializeDatabase();
-    dbFuture.then((database){
-
+    dbFuture.then((database) {
       Future<List<Item>> itemListFuture = databaseHelper.getItemList();
-      itemListFuture.then((itemList){
+      itemListFuture.then((itemList) {
         setState(() {
           this.menuList = itemList;
           this.count = itemList.length;
