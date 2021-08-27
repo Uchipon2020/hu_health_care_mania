@@ -17,6 +17,7 @@ class DatabaseHelper{
   String COLOn_the_day = 'on_the_day';  //受診日
   String COLDate = 'date';              //更新日
   String COLHeight = 'height';          //身長
+  String COLWeight = 'weight';          //体重
 
   DatabaseHelper._createInstance();
 
@@ -50,7 +51,8 @@ class DatabaseHelper{
         '　$COLOn_the_day TEXT,'
         ' $COLPriority INTEGER'
         ' $COLDate TEXT'
-        ' $COLHeight TEXT)');
+        ' $COLHeight TEXT'
+        ' $COLWeight TEXT)');
   }
 //データベースからすべてのオブジェクトを取得する
   Future<List<Map<String, dynamic>>> getItemMapList() async{
